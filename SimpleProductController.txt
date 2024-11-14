@@ -1,0 +1,74 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Signing;
+using ProductMagementAPI.Data;
+using ProductMagementAPI.Models;
+
+namespace ProductMagementAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ProductsController : ControllerBase
+    {
+        private readonly ProductListDbContext _context;
+
+        public ProductsController(ProductListDbContext context) => _context = context;
+
+        //--Load product--//
+        [HttpGet]
+        public async Task<IEnumerable<ProductList>> Get()
+            => await _context.ProductList.ToListAsync();
+
+        //--Find Product by ID--//
+        [HttpGet("id")]
+        [ProducesResponseType(typeof(ProductList), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var issue = await _context.ProductList.FindAsync(id);
+            return issue == null ? NotFound() : Ok(issue);
+        }
+
+        //--Add product--//
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> Create(ProductList productList)
+        {
+            await _context.ProductList.AddAsync(productList);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetById), new {id = productList.Id}, productList);
+        }
+
+        //--Update product--//
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Update(int id, ProductList productList)
+        {
+            if (id != productList.Id) return BadRequest();
+
+            _context.Entry(productList).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        //--Delete product--//
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var productToDelete = await _context.ProductList.FindAsync(id);
+            if (productToDelete == null) return NotFound();
+
+            _context.ProductList.Remove(productToDelete);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+    }
+}

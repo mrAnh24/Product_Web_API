@@ -1,0 +1,39 @@
+﻿@page
+@model ProductMagementWeb.Views.Home.ProductModel
+@{
+}
+
+<br>
+<h2>Product management</h2>
+<a class="btn-primary btn-sm" href="../Home/Create">New Product</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Quality</th>
+            <th>Import price</th>
+            <th>Export price</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.listOfProduct)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.ProductName</td>
+                <td>@item.Catagory</td>
+                <td>@item.Quality</td>
+                <td>@item.ImportPrice</td>
+                <td>@item.ExportPrice</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="../Home/Edit?id=@item.Id">Edit</a>
+                    <a class="btn btn-primary btn-sm" href="../Home/Delete?id=@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

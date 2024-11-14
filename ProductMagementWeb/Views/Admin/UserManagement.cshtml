@@ -1,0 +1,37 @@
+﻿@page
+@model ProductMagementWeb.Views.Admin.UserManagementModel
+@{
+}
+
+<br>
+<h2>Account management</h2>
+<a class="btn-primary btn-sm" href="../Admin/Create">New Account</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Role</th>
+            <th>Gender</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var account in Model.listOfAccount)
+        {
+            <tr>
+                <td>@account.Id</td>
+                <td>@account.Role</td>
+                <td>@account.Gender</td>
+                <td>@account.Username</td>
+                <td>@account.Email</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="../Home/Edit?id=@account.Id">Edit</a>
+                    <a class="btn btn-primary btn-sm" href="../Home/Delete?id=@account.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
